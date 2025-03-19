@@ -1,4 +1,4 @@
-import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../models/models.js'
+import { Product, ProductCategory, Restaurant, RestaurantCategory } from '../models/models.js'
 
 const index = async function (req, res) {
   try {
@@ -28,7 +28,8 @@ const indexOwner = async function (req, res) {
         include: [{
           model: RestaurantCategory,
           as: 'restaurantCategory'
-        }]
+        }],
+        order: [['pinnedAt', 'DESC']]
       })
     res.json(restaurants)
   } catch (err) {
@@ -40,6 +41,9 @@ const create = async function (req, res) {
   const newRestaurant = Restaurant.build(req.body)
   newRestaurant.userId = req.user.id // usuario actualmente autenticado
   try {
+    if (newRestaurant.pinned === true) {
+      newRestaurant.pinnedAt = new Date()
+    }
     const restaurant = await newRestaurant.save()
     res.json(restaurant)
   } catch (err) {
@@ -95,12 +99,31 @@ const destroy = async function (req, res) {
   }
 }
 
+const pinRestaurant = async function (req, res) {
+  try {
+    const restaurantToBePinned = await Restaurant.findByPk(req.params.restaurantId)
+    if (restaurantToBePinned !== null) {
+      restaurantToBePinned.pinned = !restaurantToBePinned.pinned
+      if (restaurantToBePinned.pinned === true) {
+        restaurantToBePinned.pinnedAt = new Date()
+      } else {
+        restaurantToBePinned.pinnedAt = null
+      }
+    }
+    await restaurantToBePinned.save()
+    res.json(restaurantToBePinned)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
 const RestaurantController = {
   index,
   indexOwner,
   create,
   show,
   update,
-  destroy
+  destroy,
+  pinRestaurant
 }
 export default RestaurantController

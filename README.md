@@ -22,7 +22,7 @@ Finally, pinned restaurants will always appear at the top of the restaurant list
 
 ### Tasks on backend
 
-Make all the necessary changes in the backend project to implement the new requirement. The backend tests expect the route to be: `PATCH /restaurants/:restaurantId/togglePinned` and that restaurants have a new property called `pinnedAt`.
+Make all the necessary changes in the backend project to implement the new requirement. The backend tests expect the route to be: `PATCH /restaurants/:restaurantId/togglePin` and that restaurants have a new property called `pinnedAt`.
 
 In the backend tests, note the body of `POST /restaurants/` includes a `pinned` property to be either true or false.  
 

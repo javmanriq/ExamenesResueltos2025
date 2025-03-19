@@ -13,6 +13,8 @@ const create = [
   check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
   check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
   check('userId').not().exists(),
+  check('pinned').optional({ nullable: true, checkFalsy: true }).isBoolean(),
+  check('pinnedAt').optional({ nullable: true, checkFalsy: true }).isDate(),
   check('heroImage').custom((value, { req }) => {
     return checkFileIsImage(req, 'heroImage')
   }).withMessage('Please upload an image with format (jpeg, png).'),
@@ -37,6 +39,8 @@ const update = [
   check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
   check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
   check('userId').not().exists(),
+  check('pinned').optional({ nullable: true, checkFalsy: true }).isBoolean(),
+  check('pinnedAt').optional({ nullable: true, checkFalsy: true }).isDate(),
   check('heroImage').custom((value, { req }) => {
     return checkFileIsImage(req, 'heroImage')
   }).withMessage('Please upload an image with format (jpeg, png).'),

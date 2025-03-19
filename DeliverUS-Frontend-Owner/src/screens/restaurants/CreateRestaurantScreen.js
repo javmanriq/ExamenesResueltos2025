@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { Image, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native'
-import * as ExpoImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import * as yup from 'yup'
+import * as ExpoImagePicker from 'expo-image-picker'
+import { ErrorMessage, Formik } from 'formik'
+import React, { useEffect, useState } from 'react'
+import { Image, Platform, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
+import { showMessage } from 'react-native-flash-message'
+import * as yup from 'yup'
+import restaurantBackground from '../../../assets/restaurantBackground.jpeg'
+import restaurantLogo from '../../../assets/restaurantLogo.jpeg'
 import { create, getRestaurantCategories } from '../../api/RestaurantEndpoints'
 import InputItem from '../../components/InputItem'
+import TextError from '../../components/TextError'
 import TextRegular from '../../components/TextRegular'
 import * as GlobalStyles from '../../styles/GlobalStyles'
-import restaurantLogo from '../../../assets/restaurantLogo.jpeg'
-import restaurantBackground from '../../../assets/restaurantBackground.jpeg'
-import { showMessage } from 'react-native-flash-message'
-import { ErrorMessage, Formik } from 'formik'
-import TextError from '../../components/TextError'
 
 export default function CreateRestaurantScreen ({ navigation }) {
   const [open, setOpen] = useState(false)
   const [restaurantCategories, setRestaurantCategories] = useState([])
   const [backendErrors, setBackendErrors] = useState()
 
-  const initialRestaurantValues = { name: null, description: null, address: null, postalCode: null, url: null, shippingCosts: null, email: null, phone: null, restaurantCategoryId: null }
+  const initialRestaurantValues = { name: null, description: null, address: null, postalCode: null, url: null, shippingCosts: null, email: null, phone: null, restaurantCategoryId: null, pinned: false }
   const validationSchema = yup.object().shape({
     name: yup
       .string()
@@ -53,7 +53,9 @@ export default function CreateRestaurantScreen ({ navigation }) {
       .number()
       .positive()
       .integer()
-      .required('Restaurant category is required')
+      .required('Restaurant category is required'),
+    pinned: yup
+      .boolean()
   })
 
   useEffect(() => {
@@ -203,6 +205,18 @@ export default function CreateRestaurantScreen ({ navigation }) {
                 <TextRegular>Hero image: </TextRegular>
                 <Image style={styles.image} source={values.heroImage ? { uri: values.heroImage.assets[0].uri } : restaurantBackground} />
               </Pressable>
+
+              <TextRegular>Do you want to pin the restaurant?</TextRegular>
+              <Switch
+                trackColor={{ false: GlobalStyles.brandSecondary, true: GlobalStyles.brandPrimary }}
+                thumbColor={values.availability ? GlobalStyles.brandSecondary : '#f4f3f4'}
+                // onValueChange={toggleSwitch}
+                value={values.pinned}
+                style={styles.switch}
+                onValueChange={value =>
+                  setFieldValue('pinned', value)
+              }
+              />
 
               {backendErrors &&
                 backendErrors.map((error, index) => <TextError key={index}>{error.param}-{error.msg}</TextError>)

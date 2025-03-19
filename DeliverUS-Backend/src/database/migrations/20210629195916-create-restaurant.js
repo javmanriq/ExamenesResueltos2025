@@ -46,6 +46,13 @@ module.exports = {
       heroImage: {
         type: Sequelize.STRING
       },
+      pinned: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      pinnedAt: {
+        type: Sequelize.DATE
+      },
       status: {
         type: Sequelize.ENUM,
         values: [
