@@ -66,7 +66,7 @@ export default function CreateProductScreen ({ navigation, route }) {
   }, [])
   const pickImage = async (onSuccess) => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ExpoImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1

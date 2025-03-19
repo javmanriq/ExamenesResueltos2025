@@ -1,9 +1,8 @@
 import axios from 'axios'
 import { handleError } from './Errors'
 import { prepareData } from './FileUploadHelper'
-import { API_BASE_URL } from '@env'
 
-axios.defaults.baseURL = API_BASE_URL
+axios.defaults.baseURL = process.env.API_BASE_URL
 
 const get = route => {
   return new Promise(function (resolve, reject) {

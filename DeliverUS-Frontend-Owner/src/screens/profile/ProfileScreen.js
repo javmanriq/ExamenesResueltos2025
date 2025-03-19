@@ -1,7 +1,7 @@
 import * as ExpoImagePicker from 'expo-image-picker'
 import React, { useContext, useState, useEffect } from 'react'
-import { Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, ScrollView } from 'react-native'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { AuthorizationContext } from '../../context/AuthorizationContext'
 import { Formik } from 'formik'
 import * as yup from 'yup'
@@ -64,7 +64,7 @@ export default function ProfileScreen () {
 
   const pickImage = async (onSuccess) => {
     const result = await ExpoImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ExpoImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1
@@ -101,7 +101,7 @@ export default function ProfileScreen () {
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={75}>
-            <Pressable onPress={Platform.OS === 'ios' ? Keyboard.dismiss : undefined}>
+            <TouchableWithoutFeedback onPress={Platform.OS === 'ios' ? Keyboard.dismiss : undefined}>
               <View style={{ alignItems: 'center' }}>
                 <View style={styles.container}>
                   <View style={{ flexDirection: 'row', marginTop: 30 }}>
@@ -184,7 +184,7 @@ export default function ProfileScreen () {
                   <SystemInfo />
                 </View>
               </View>
-            </Pressable>
+            </TouchableWithoutFeedback>
           </KeyboardAvoidingView>
         </ScrollView>
       )}

@@ -1,15 +1,12 @@
 import { Platform } from 'react-native'
 import * as mime from 'react-native-mime-types'
-import { API_BASE_URL } from '@env'
-
-const getPlatform = () => Platform?.OS ?? 'web'
 
 // Returns {name:fileName, fileObject:file}
 const normalizeFile = (file) => {
-  if (getPlatform() === 'web') {
-    const fileName = file.assets[0].fileName
-    const imageType = file.assets[0].mimeType
-    const byteString = atob(file.assets[0].uri.split(',')[1])
+  if (Platform.OS === 'web') {
+    const fileName = file.uri.split('/').pop()
+    const imageType = file.uri.split(',')[0].split(':')[1].split(';')[0]
+    const byteString = atob(file.uri.split(',')[1])
     const ab = new ArrayBuffer(byteString.length)
     const arr = new Uint8Array(ab)
     for (let i = 0; i < byteString.length; i++) { arr[i] = byteString.charCodeAt(i) }
@@ -26,9 +23,9 @@ const normalizeFile = (file) => {
     return {
       name: file.paramName,
       fileObject: {
-        name: file.assets[0].uri.slice(-20),
-        type: file.assets[0].mimeType,
-        uri: Platform.OS === 'ios' ? file.assets[0].uri.replace('file://', '') : file.assets[0].uri
+        name: file.uri.slice(-20),
+        type: mime.lookup(file.uri),
+        uri: Platform.OS === 'ios' ? file.uri.replace('file://', '') : file.uri
       }
     }
   }
@@ -75,7 +72,7 @@ function prepareData (preparedData) {
     files = getFilesFromData(preparedData)
   }
   preparedData = getDataWithoutBodyFiles(preparedData)
-  if (files?.length) {
+  if (files && files.length) {
     preparedData = constructFormData(files, preparedData)
     config = getMultiPartHeader()
   }
@@ -86,7 +83,7 @@ const prepareEntityImages = (entity, imagePropertyNames) => {
   const entityCopy = { ...entity }
   imagePropertyNames.forEach(impagePropertyName => {
     if (entityCopy[impagePropertyName]) {
-      entityCopy[impagePropertyName] = { assets: [{ uri: `${API_BASE_URL}/${entityCopy[impagePropertyName]}` }] }
+      entityCopy[impagePropertyName] = { assets: [{ uri: `${process.env.API_BASE_URL}/${entityCopy[impagePropertyName]}` }] }
     }
   })
 
